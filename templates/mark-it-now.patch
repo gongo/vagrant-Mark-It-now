@@ -1,0 +1,55 @@
+diff --git a/app/models/comic.rb b/app/models/comic.rb
+index 4abf0f3..e902e59 100644
+--- a/app/models/comic.rb
++++ b/app/models/comic.rb
+@@ -1,4 +1,11 @@
+ #coding:utf-8
++
++require_relative './comic_cache'
++require_relative './comic_search'
++require_relative './comic_magick'
++require_relative './comic_aozora'
++require_relative './comic_pdf'
++
+ class Comic < ActiveRecord::Base
+   include ComicCache
+   include ComicSearch
+diff --git a/app/models/search.rb b/app/models/search.rb
+index f47b98e..110521a 100644
+--- a/app/models/search.rb
++++ b/app/models/search.rb
+@@ -1,7 +1,7 @@
+ class Search
+   attr_accessor :g
+   def initialize
+-    Dir::mkdir ::Rails.root+"db/groonga" unless File.exist? ::Rails.root+"db/groonga"
++    Dir::mkdir "#{::Rails.root}/db/groonga" unless File.exist? "#{::Rails.root}/db/groonga"
+     if File.exist? "#{::Rails.root}/db/groonga/search"
+       self.g = Groonga::Database.open "#{::Rails.root}/db/groonga/search"
+     else
+diff --git a/config/environments/production.rb b/config/environments/production.rb
+index 3a3e06a..d5b6730 100644
+--- a/config/environments/production.rb
++++ b/config/environments/production.rb
+@@ -9,7 +9,7 @@ MarkItNow::Application.configure do
+   config.action_controller.perform_caching = true
+ 
+   # Disable Rails's static asset server (Apache or nginx will already do this)
+-  config.serve_static_assets = false
++  #config.serve_static_assets = false
+ 
+   # Compress JavaScripts and CSS
+   config.assets.compress = true
+diff --git a/crawl.rb b/crawl.rb
+index a6da515..db91c60 100644
+--- a/crawl.rb
++++ b/crawl.rb
+@@ -6,7 +6,7 @@ require 'zipruby'
+ 
+ module Rails
+   def self.root
+-    File.dirname(__FILE__)
++    File.expand_path(File.dirname(__FILE__))
+   end
+ end
+ 
